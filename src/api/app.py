@@ -7,11 +7,18 @@ from flask_cors import CORS
 from functools import wraps
 import jwt
 from datetime import datetime, timedelta
+import sys
+import os
 
-from ..data.models import User, FashionItem, init_db, get_session
-from ..models.recommendation_engine import RecommendationEngine
-from ..models.trend_analyzer import TrendAnalyzer
-from ..config.config import config
+# Add project root to path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from src.data.models import User, FashionItem, init_db, get_session
+from src.models.recommendation_engine import RecommendationEngine
+from src.models.trend_analyzer import TrendAnalyzer
+from config.config import config
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.SECRET_KEY
