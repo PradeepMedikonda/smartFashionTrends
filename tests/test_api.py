@@ -9,6 +9,9 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+# Set environment before imports
+os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+
 from src.api.app import app
 from src.data.models import init_db
 from src.utils.data_generator import initialize_sample_data
@@ -20,9 +23,10 @@ class TestAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test database and sample data."""
-        # Use in-memory SQLite for testing
-        os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+        # Initialize database
         init_db()
+        
+        # Initialize sample data
         initialize_sample_data()
     
     def setUp(self):

@@ -12,7 +12,7 @@ import os
 from datetime import datetime, timedelta
 
 from ..data.models import User, FashionItem, UserInteraction, UserPreference, get_session
-from ..config.config import config
+from config.config import config
 
 
 class RecommendationEngine:

@@ -18,7 +18,9 @@ INTERACTION_TYPES = ['view', 'like', 'cart', 'wishlist', 'purchase']
 
 def generate_sample_items(n=100):
     """Generate sample fashion items."""
-    session = get_session()
+    # Get a fresh session after database initialization
+    from ..data.models import get_session as _get_session
+    session = _get_session()
     
     items = []
     for i in range(n):
@@ -51,7 +53,8 @@ def generate_sample_items(n=100):
 
 def generate_sample_users(n=20):
     """Generate sample users."""
-    session = get_session()
+    from ..data.models import get_session as _get_session
+    session = _get_session()
     
     users = []
     for i in range(n):
@@ -70,7 +73,8 @@ def generate_sample_users(n=20):
 
 def generate_sample_interactions(n_interactions=500):
     """Generate sample user interactions."""
-    session = get_session()
+    from ..data.models import get_session as _get_session
+    session = _get_session()
     
     users = session.query(User).all()
     items = session.query(FashionItem).all()

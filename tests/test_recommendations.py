@@ -8,6 +8,12 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+# Set test database
+test_db_path = 'test_fashion_trends.db'
+if os.path.exists(test_db_path):
+    os.remove(test_db_path)
+os.environ['DATABASE_URL'] = f'sqlite:///{test_db_path}'
+
 from src.data.models import init_db, get_session, User, FashionItem, UserInteraction
 from src.models.recommendation_engine import RecommendationEngine
 from src.utils.data_generator import generate_sample_items, generate_sample_users, generate_sample_interactions
@@ -19,14 +25,19 @@ class TestRecommendationEngine(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test database and sample data."""
-        # Use in-memory SQLite for testing
-        os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+        # Initialize database
         init_db()
         
         # Generate test data
         generate_sample_items(50)
         generate_sample_users(10)
         generate_sample_interactions(200)
+    
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up test database."""
+        if os.path.exists(test_db_path):
+            os.remove(test_db_path)
     
     def setUp(self):
         """Set up test fixtures."""
