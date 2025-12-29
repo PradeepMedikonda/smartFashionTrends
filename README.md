@@ -98,7 +98,6 @@ All user data is handled according to our [Privacy Policy](policies/PRIVACY_POLI
 ## Technologies Used
 
 - **Python 3.8+**
-- **TensorFlow/Keras** - Deep learning models
 - **Scikit-learn** - Machine learning algorithms
 - **Flask** - REST API
 - **SQLAlchemy** - Database ORM

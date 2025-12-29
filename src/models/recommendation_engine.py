@@ -9,9 +9,15 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from typing import List, Dict, Tuple
 import joblib
 import os
+import sys
 from datetime import datetime, timedelta
 
-from ..data.models import User, FashionItem, UserInteraction, UserPreference, get_session
+# Add project root to path for config import
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from src.data.models import User, FashionItem, UserInteraction, UserPreference, get_session
 from config.config import config
 
 
