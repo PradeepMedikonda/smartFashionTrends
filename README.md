@@ -38,13 +38,41 @@ cp .env.example .env
 
 ## Usage
 
-### Starting the API Server
+### Starting the Application
+
+1. **Train the Model (First Time Setup)**
+
+```bash
+python src/train_model.py
+```
+
+This initializes the database, generates sample data, and trains the recommendation model.
+
+2. **Start the API Server**
 
 ```bash
 python src/api/app.py
 ```
 
-The API will be available at `http://localhost:5000`
+The application will be available at `http://localhost:5000`
+
+3. **Access the Web UI**
+
+Open your browser and navigate to:
+```
+http://localhost:5000
+```
+
+You'll see a modern web interface where you can:
+- Register/Login to your account
+- View personalized fashion recommendations
+- Interact with items (like, cart, wishlist)
+- Explore fashion trends
+- View your learned preferences
+
+### Using the API Directly
+
+The REST API is also available at `http://localhost:5000/api`
 
 ### Training the Model
 

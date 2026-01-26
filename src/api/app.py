@@ -2,7 +2,7 @@
 Flask API for Smart Fashion Trends application.
 Provides endpoints for authentication, recommendations, and trend analysis.
 """
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from functools import wraps
 import jwt
@@ -20,7 +20,7 @@ from src.models.recommendation_engine import RecommendationEngine
 from src.models.trend_analyzer import TrendAnalyzer
 from config.config import config
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../../ui')
 app.config['SECRET_KEY'] = config.SECRET_KEY
 CORS(app)
 
@@ -58,7 +58,19 @@ def token_required(f):
 
 @app.route('/')
 def index():
-    """API root endpoint."""
+    """Serve the UI home page."""
+    return send_from_directory(app.static_folder, 'index.html')
+
+
+@app.route('/ui/<path:path>')
+def serve_ui(path):
+    """Serve UI static files."""
+    return send_from_directory(app.static_folder, path)
+
+
+@app.route('/api')
+def api_info():
+    """API information endpoint."""
     return jsonify({
         'name': 'Smart Fashion Trends API',
         'version': '1.0.0',
@@ -81,7 +93,6 @@ def index():
             }
         }
     })
-
 
 # Authentication endpoints
 @app.route('/api/auth/register', methods=['POST'])

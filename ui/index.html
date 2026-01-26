@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Fashion Trends - AI Recommendations</title>
+    <link rel="stylesheet" href="/ui/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🎨 Smart Fashion Trends</h1>
+            <p class="tagline">AI-Powered Fashion Recommendations</p>
+            <div id="user-info" class="user-info" style="display: none;">
+                <span id="username-display"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Auth Section -->
+        <div id="auth-section" class="section">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                    <button class="tab-btn" onclick="showTab('register')">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <h2>Login</h2>
+                    <input type="text" id="login-username" placeholder="Username" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <button onclick="login()" class="btn btn-primary">Login</button>
+                    <div id="login-error" class="error-message"></div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form" style="display: none;">
+                    <h2>Register</h2>
+                    <input type="text" id="register-username" placeholder="Username" required>
+                    <input type="email" id="register-email" placeholder="Email" required>
+                    <input type="password" id="register-password" placeholder="Password" required>
+                    <button onclick="register()" class="btn btn-primary">Register</button>
+                    <div id="register-error" class="error-message"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="app-section" class="section" style="display: none;">
+            <!-- Navigation -->
+            <nav class="nav-tabs">
+                <button class="nav-btn active" onclick="showSection('recommendations')">
+                    💡 Recommendations
+                </button>
+                <button class="nav-btn" onclick="showSection('trends')">
+                    📈 Trends
+                </button>
+                <button class="nav-btn" onclick="showSection('preferences')">
+                    ⚙️ Preferences
+                </button>
+            </nav>
+
+            <!-- Recommendations Section -->
+            <div id="recommendations-section" class="content-section">
+                <h2>Personalized Recommendations</h2>
+                <button onclick="loadRecommendations()" class="btn btn-primary">
+                    🔄 Refresh Recommendations
+                </button>
+                <div id="recommendations-list" class="items-grid">
+                    <!-- Recommendations will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Trends Section -->
+            <div id="trends-section" class="content-section" style="display: none;">
+                <h2>Fashion Trends</h2>
+                <div class="trend-controls">
+                    <label>Time Period:</label>
+                    <select id="trend-days" onchange="loadTrends()">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                    <button onclick="loadTrends()" class="btn btn-primary">
+                        🔄 Refresh Trends
+                    </button>
+                </div>
+                <div id="trends-list" class="trends-container">
+                    <!-- Trends will be loaded here -->
+                </div>
+                
+                <h3 style="margin-top: 30px;">Seasonal Trends</h3>
+                <div class="seasonal-controls">
+                    <button onclick="loadSeasonalTrends('spring')" class="btn btn-secondary">🌸 Spring</button>
+                    <button onclick="loadSeasonalTrends('summer')" class="btn btn-secondary">☀️ Summer</button>
+                    <button onclick="loadSeasonalTrends('fall')" class="btn btn-secondary">🍂 Fall</button>
+                    <button onclick="loadSeasonalTrends('winter')" class="btn btn-secondary">❄️ Winter</button>
+                </div>
+                <div id="seasonal-trends-list" class="trends-container">
+                    <!-- Seasonal trends will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Preferences Section -->
+            <div id="preferences-section" class="content-section" style="display: none;">
+                <h2>Your Preferences</h2>
+                <button onclick="loadPreferences()" class="btn btn-primary">
+                    🔄 Refresh Preferences
+                </button>
+                <div id="preferences-list" class="preferences-container">
+                    <!-- Preferences will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Smart Fashion Trends - AI-Powered Recommendations</p>
+            <p class="privacy-note">🔒 Your data is private and secure. See our <a href="#" onclick="alert('Privacy policy would be displayed here')">Privacy Policy</a></p>
+        </footer>
+    </div>
+
+    <script src="/ui/static/js/app.js"></script>
+</body>
+</html>
