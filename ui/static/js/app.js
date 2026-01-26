@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = window.location.origin;
 let authToken = localStorage.getItem('authToken');
 let currentUser = localStorage.getItem('currentUser');
 
@@ -9,6 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
         showApp();
         loadRecommendations();
     }
+    
+    // Event delegation for item actions
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('.like-btn, .cart-btn, .wishlist-btn')) {
+            const itemId = parseInt(e.target.dataset.itemId);
+            const action = e.target.dataset.action;
+            if (itemId && action) {
+                submitFeedback(itemId, action);
+            }
+        }
+    });
 });
 
 // Auth Functions
@@ -185,28 +196,37 @@ function displayRecommendations(recommendations) {
         return;
     }
 
-    container.innerHTML = recommendations.map(item => `
-        <div class="item-card">
-            <h3>${item.name || `Item ${item.item_id}`}</h3>
-            <div class="item-detail"><strong>Category:</strong> ${item.category || 'N/A'}</div>
-            <div class="item-detail"><strong>Style:</strong> ${item.style || 'N/A'}</div>
-            <div class="item-detail"><strong>Color:</strong> ${item.color || 'N/A'}</div>
-            <div class="item-detail"><strong>Brand:</strong> ${item.brand || 'N/A'}</div>
-            <div class="item-detail"><strong>Price:</strong> $${item.price || '0.00'}</div>
-            <span class="item-score">Score: ${item.score ? item.score.toFixed(2) : 'N/A'}</span>
-            <div class="item-actions">
-                <button class="action-btn like-btn" onclick="submitFeedback(${item.item_id}, 'like')">
-                    ❤️ Like
-                </button>
-                <button class="action-btn cart-btn" onclick="submitFeedback(${item.item_id}, 'cart')">
-                    🛒 Cart
-                </button>
-                <button class="action-btn wishlist-btn" onclick="submitFeedback(${item.item_id}, 'wishlist')">
-                    ⭐ Wishlist
-                </button>
+    container.innerHTML = recommendations.map(item => {
+        // Escape HTML to prevent XSS
+        const escapeHtml = (str) => {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        };
+        
+        return `
+            <div class="item-card">
+                <h3>${escapeHtml(item.name || `Item ${item.item_id}`)}</h3>
+                <div class="item-detail"><strong>Category:</strong> ${escapeHtml(item.category || 'N/A')}</div>
+                <div class="item-detail"><strong>Style:</strong> ${escapeHtml(item.style || 'N/A')}</div>
+                <div class="item-detail"><strong>Color:</strong> ${escapeHtml(item.color || 'N/A')}</div>
+                <div class="item-detail"><strong>Brand:</strong> ${escapeHtml(item.brand || 'N/A')}</div>
+                <div class="item-detail"><strong>Price:</strong> $${item.price || '0.00'}</div>
+                <span class="item-score">Score: ${item.score ? item.score.toFixed(2) : 'N/A'}</span>
+                <div class="item-actions">
+                    <button class="action-btn like-btn" data-item-id="${item.item_id}" data-action="like">
+                        ❤️ Like
+                    </button>
+                    <button class="action-btn cart-btn" data-item-id="${item.item_id}" data-action="cart">
+                        🛒 Cart
+                    </button>
+                    <button class="action-btn wishlist-btn" data-item-id="${item.item_id}" data-action="wishlist">
+                        ⭐ Wishlist
+                    </button>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 async function submitFeedback(itemId, interactionType) {
@@ -232,11 +252,11 @@ async function submitFeedback(itemId, interactionType) {
         });
 
         if (response.ok) {
-            alert(`✅ ${interactionType.charAt(0).toUpperCase() + interactionType.slice(1)} recorded!`);
+            showToast(`✅ ${interactionType.charAt(0).toUpperCase() + interactionType.slice(1)} recorded!`, 'success');
             loadRecommendations(); // Refresh recommendations
         }
     } catch (error) {
-        alert('❌ Failed to record feedback');
+        showToast('❌ Failed to record feedback', 'error');
     }
 }
 
@@ -428,4 +448,31 @@ function showError(element, message) {
     setTimeout(() => {
         element.classList.remove('show');
     }, 5000);
+}
+
+function showToast(message, type = 'success') {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
