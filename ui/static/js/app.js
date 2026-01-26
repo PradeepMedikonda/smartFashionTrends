@@ -273,14 +273,63 @@ function displayTrends(trends) {
     for (const [category, items] of Object.entries(trends)) {
         html += `
             <div class="trend-category">
-                <h3>📊 ${category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+                <h3>📊 ${category.replace('_', ' ').charAt(0).toUpperCase() + category.replace('_', ' ').slice(1)}</h3>
                 <div class="trend-items">
-                    ${Object.entries(items).map(([key, value]) => `
-                        <div class="trend-tag">
-                            <span class="trend-value">${key}</span>
-                            <span class="trend-score">${typeof value === 'number' ? value.toFixed(1) : value}</span>
-                        </div>
-                    `).join('')}
+        `;
+        
+        if (Array.isArray(items)) {
+            // Handle array of objects
+            html += items.slice(0, 10).map(item => {
+                let label = '';
+                let score = '';
+                
+                if (category === 'by_brand') {
+                    label = item.brand || 'Unknown';
+                    score = item.trend_score?.toFixed(1) || item.interaction_count || '';
+                } else if (category === 'by_category') {
+                    label = item.category || 'Unknown';
+                    score = item.trend_score?.toFixed(1) || item.interaction_count || '';
+                } else if (category === 'by_color') {
+                    label = item.color || 'Unknown';
+                    score = item.trend_score?.toFixed(1) || item.interaction_count || '';
+                } else if (category === 'by_style') {
+                    label = item.style || 'Unknown';
+                    score = item.trend_score?.toFixed(1) || item.interaction_count || '';
+                } else if (category === 'top_items') {
+                    label = item.name || `Item ${item.item_id}`;
+                    score = item.trend_score?.toFixed(1) || '';
+                }
+                
+                return `
+                    <div class="trend-tag">
+                        <span class="trend-value">${label}</span>
+                        <span class="trend-score">${score}</span>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            // Handle object format
+            html += Object.entries(items).slice(0, 10).map(([key, value]) => {
+                let displayScore = '';
+                
+                if (typeof value === 'number') {
+                    displayScore = value.toFixed(1);
+                } else if (typeof value === 'object' && value !== null) {
+                    displayScore = value.trend_score?.toFixed(1) || value.interaction_count || '';
+                } else {
+                    displayScore = value;
+                }
+                
+                return `
+                    <div class="trend-tag">
+                        <span class="trend-value">${key}</span>
+                        <span class="trend-score">${displayScore}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        html += `
                 </div>
             </div>
         `;
